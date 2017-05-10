@@ -59,5 +59,5 @@ app.use(function(req, res, next) {
 });
 
 models.sequelize.sync().then(function() {
-    app.listen(8080);
+    app.listen(80);
 });
