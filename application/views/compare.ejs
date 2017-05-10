@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<% include partials/head.ejs %>
+
+    <body>
+        <% include partials/navigation.ejs %>
+
+            <div class="jumbotron" style="text-align: center; background-color: aliceblue;">
+                <h1 style="text-align: center;">Performance of your installation</h1>
+                <h2 style="text-align: center;"><%= theoricalProduction %> Kwh </h2>
+            </div>
+            </br>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h1>Location</h1>
+                        <div id="googleMap" style="height: 50vh;"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h1>Installation</h1>
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label style="text-align: left;" for="installation-production" class="col-sm-4 control-label">Production (Kwh)</label>
+                                <div class="col-sm-8">
+                                    <input style="background-color: white;" class="form-control" id="installation-production" readonly/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label style="text-align: left;" for="installation-inverter-efficiency" class="col-sm-4 control-label">Inverter efficiency (%)</label>
+                                <div class="col-sm-8">
+                                    <input style="background-color: white;" class="form-control" id="installation-inverter-efficiency" readonly/>
+                                </div>
+                            </div>
+                        </div>
+                        </br>
+                        <h1>Equipment</h1>
+                        <div>
+                            <!--<ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#tab-solar-panel" role="tab" data-toggle="tab">Solar panel</a></li>
+                                <li role="presentation"><a href="#wind-turbine" role="tab" data-toggle="tab">Wind turbine</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="tab-solar-panel">-->
+                            <table class="table table-hover" id="table-equipment">
+                                <thead>
+                                    <tr>
+                                        <th>Technology</th>
+                                        <th>Nominal power (wp)</th>
+                                        <th>Slope (°)</th>
+                                        <th>Azimuth (°)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <!--</div>
+                                <div role="tabpanel" class="tab-pane" id="wind-turbine">
+                                </div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </br>
+
+            <% include partials/script.ejs %>
+                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdv3Y8l7bUtzaqTkzawCBroYZqOIaWeaI&language=en&libraries=places"
+                    async defer></script>
+
+                <script>
+                    var googleMap;
+                    var currentInstallation = <%- JSON.stringify(currentInstallation) %>;
+
+                    function initAutocomplete() {
+                        googleMap = new google.maps.Map(document.getElementById('googleMap'), {
+                            center: { lat: 0, lng: 0 },
+                            zoom: 1,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        });
+                    }
+
+                    $(document).ready(function () {
+                        initAutocomplete();
+                        updateLocation(currentInstallation.location);
+                        updateInstallation(currentInstallation.installation);
+                        updateEquipment(currentInstallation.equipmentList);
+                    });
+
+                    function updateLocation(currentLocation) {
+                        var infowindow = new google.maps.InfoWindow();
+                        var service = new google.maps.places.PlacesService(googleMap);
+                        service.getDetails({
+                            placeId: currentLocation.google_place_id
+                        },
+                            function (place, status) {
+                                var marker = new google.maps.Marker({
+                                    map: googleMap,
+                                    position: place.geometry.location
+                                });
+                                google.maps.event.addListener(marker, 'click', function () {
+                                    infowindow.setContent(currentLocation.route + ' ' + currentLocation.street_number + ', ' + currentLocation.postal_code + ' ' + currentLocation.locality + ', ' + currentLocation.country);
+                                    infowindow.open(googleMap, this);
+                                });
+
+                            });
+
+                        googleMap.setZoom(14);
+                        googleMap.setCenter(new google.maps.LatLng(currentLocation.lat, currentLocation.lng));
+                    }
+
+                    function updateInstallation(currentInstallation) {
+                        $('#installation-production').val(currentInstallation.production);
+                        $('#installation-inverter-efficiency').val(currentInstallation.inverter_efficiency);
+                    }
+
+                    function updateEquipment(currentEquipment) {
+                        currentEquipment.forEach(function (equipment) {
+                            $('#table-equipment tbody').append(
+                                '<tr id="trEquipment' + equipment.id + '">' +
+                                '<td>' + equipment.technologyId + '</td>' + //technologyId => technologyText type
+                                '<td>' + equipment.nominal_power + '</td>' +
+                                '<td>' + equipment.slope + '</td>' +
+                                '<td>' + equipment.azimuth + '</td>' +
+                                '</tr>');
+                        });
+                    }
+                </script>
+    </body>
+
+</html>

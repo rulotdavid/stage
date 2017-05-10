@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<% include partials/head.ejs %>
+
+    <body>
+        <% include partials/navigation.ejs %>
+
+            <div style="background: url('/pictures/index.png') no-repeat center center; 
+    -webkit-background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -o-background-size: 100% 100%;
+    background-size: 100% 100%;
+    text-align: center;color: white;" ; class="jumbotron">
+
+                <h1>Solar Panel Platforme</h1>
+                <p>Monitor your installation</p>
+            </div>
+
+            <div class="jumbotron" style="text-align: center; background-color: aliceblue;">
+                <p>
+                    The solar platform allows you to monitor your photovoltaic installation.
+                </p>
+                </br>
+                <p>
+                    You will be able to determine the performance of your installation, comparing your production with your neighborhood.
+                </p>
+                </br>
+                <p>
+                    Insert the characteristics of your installation, and you will be able to get an estimate of the efficiency of your installation.
+                </p>
+            </div>
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h1>Sign up</h1>
+                        <form action="javascript:signup();">
+                            <div class="form-group">
+                                <label for="signup-email">Email</label>
+                                <input id="signup-email" required placeholder="Email" type="email" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-password">Password</label>
+                                <input placeholder="Password" id="signup-password" required type="password" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-confirm-password">Confirm password</label>
+                                <input id="signup-confirm-password" placeholder="Confirm password" required type="password" class="form-control" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Sign up</button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <h1>Sign in</h1>
+                        <form action="javascript:signin();">
+                            <div class="form-group">
+                                <label for="signin-email">Email</label>
+                                <input required id="signin-email" placeholder="Email" type="email" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="signin-password">Password</label>
+                                <input id="signin-password" placeholder="Password" required type="password" class="form-control" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Sign in</button>
+                        </form>
+                    </div>
+                </div>
+                </br>
+
+                <% include partials/script.ejs %>
+
+                    <script>
+                        function signup() {
+                            var email = $('#signup-email').val();
+                            var password = $('#signup-password').val();
+
+                            if (password != $('#signup-confirm-password').val()) {
+                                swal('Warning', 'Passwords do not match.', 'warning');
+                                return;
+                            }
+
+                            axios.post('/sign_up', {
+                                email: email,
+                                password: password
+                            })
+                                .then(function (response) {
+                                    switch (String(response.data)) {
+                                        case '1':
+                                            window.location.replace('/installations');
+                                            break;
+                                        case '-1':
+                                            swal('Error', 'Email already used.', 'error');
+                                            break;
+                                        case '-2':
+                                            swal('Error', 'Account creation failed.', 'error');
+                                            break;
+                                        case '-3':
+                                            swal('Error', 'Account verification failed.', 'error');
+                                            break;
+                                    }
+                                })
+                                .catch(function (error) {
+                                    swal('Error', 'Connection failed.', 'error');
+                                });
+                        }
+
+                        function signin() {
+                            var email = $('#signin-email').val();
+                            var password = $('#signin-password').val();
+
+                            axios.post('/sign_in', {
+                                email: email,
+                                password: password
+                            })
+                                .then(function (response) {
+                                    console.log(response);
+                                    switch (String(response.data)) {
+                                        case '1':
+                                            window.location.replace('/installations');
+                                            break;
+                                        case '-1':
+                                            swal('Error', 'Email / Password invalid', 'error');
+                                            break;
+                                        case '-2':
+                                            swal('Error', 'Account verification failed', 'error');
+                                            break;
+                                    }
+                                })
+                                .catch(function (error) {
+                                    swal('Error', 'Connection failed.', 'error');
+                                });
+                        }
+                    </script>
+
+    </body>
+
+</html>
