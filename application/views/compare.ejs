@@ -6,9 +6,28 @@
         <% include partials/navigation.ejs %>
 
             <div class="jumbotron" style="text-align: center; background-color: aliceblue;">
-                <h1 style="text-align: center;">Performance of your installation</h1>
-                <h2 style="text-align: center;"><%= theoricalProduction %> Kwh </h2>
+                <div style="text-align: center;">
+                    <h2>
+                        Based on the data we have, your installation should have had this production last year
+                    </h2>
+                    <h1>
+                        <%= theoricalProduction %> Kwh
+                    </h1>
+                    <h3>
+                        How to interpret the result?
+                    </h3>
+                    </br>
+                    If the production prediction is lower than your actual production, it indicates that your installation is working better than the other installations we have.
+                    </br>
+                    If the production prediction is lower than your actual production, it indicates that your installation is not performing as well as the other installations we have.
+                    </br>
+                    </br>
+                    Warning: this is a beta version.
+                    </br>
+                </div>
             </div>
+            </br>
+            <h1 style="text-align: center;">Summary of your installation</h1>
             </br>
             <div class="container-fluid">
                 <div class="row">

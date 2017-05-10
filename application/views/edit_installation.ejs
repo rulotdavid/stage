@@ -52,7 +52,7 @@
               </div>
               <div id="tipInverterEffeciency" hidden>
                 <p>
-                  The performance of PV modules depends technology. Select your PV technology.
+                  The performance of the inverter. Read your manual to find the information.
                 </p>
                 </br>
               </div>
@@ -360,8 +360,16 @@
               throw 'Production is missing';
             }
 
+            if ($('#installation-production').val() < 0) {
+              throw 'Production is not correct';
+            }
+
             if ($('#installation-inverter-efficiency').val().length == 0) {
               throw 'Inverter efficiency is missing';
+            }
+
+            if ($('#installation-inverter-efficiency').val() < 0 || $('#installation-inverter-efficiency').val() > 100) {
+              throw 'Inverter efficiency is not correct';
             }
           }
 
