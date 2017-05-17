@@ -387,7 +387,6 @@ exports.comparePOST = function (req, res) {
                     }).then(function (equipmentFind) {
                         if (currentInstallation.installation != null && equipmentFind.installationId == currentInstallation.installation.get('id')) {
                             currentInstallation.equipmentList.push(equipmentFind);
-
                         }
                         else {
                             var add = [
@@ -408,68 +407,72 @@ exports.comparePOST = function (req, res) {
             });
 
             Promise.all(allData).then(function () {
-                var jsonX = JSON.stringify(X);
-                var jsonY = JSON.stringify(Y);
-                console.log('X: ' + jsonX);
-                console.log('Y: ' + jsonY);
+                if (Y.length != 0) {
+                    var jsonX = JSON.stringify(X);
+                    var jsonY = JSON.stringify(Y);
+                    console.log('X: ' + jsonX);
+                    console.log('Y: ' + jsonY);
 
-                var optionsFit = {
-                    args: [jsonX, jsonY]
-                };
+                    var optionsFit = {
+                        args: [jsonX, jsonY]
+                    };
 
-                pythonShell.run(pathScriptFit, optionsFit, function (err) {
-                    if (err) {
-                        console.log(err);
-                        res.redirect('/installations');
-                    }
-                    else {
-                        var dataPredict = [];
-                        dataPredict.push([
-                            Number(currentInstallation.location.get('lat')),
-                            Number(currentInstallation.location.get('lng')),
-                            currentInstallation.installation.get('inverter_efficiency'),
-                            currentInstallation.equipmentList[0].get('technologyId'),
-                            currentInstallation.equipmentList[0].get('nominal_power'),
-                            currentInstallation.equipmentList[0].get('slope'),
-                            currentInstallation.equipmentList[0].get('azimuth'),
-                            currentInstallation.installation.production
-                        ]);
-                        var jsonDataPredict = JSON.stringify(dataPredict);
-                        console.log('predict: ' + jsonDataPredict);
+                    pythonShell.run(pathScriptFit, optionsFit, function (err) {
+                        if (err) {
+                            console.log(err);
+                            res.redirect('/installations');
+                        }
+                        else {
+                            var dataPredict = [];
+                            dataPredict.push([
+                                Number(currentInstallation.location.get('lat')),
+                                Number(currentInstallation.location.get('lng')),
+                                currentInstallation.installation.get('inverter_efficiency'),
+                                currentInstallation.equipmentList[0].get('technologyId'),
+                                currentInstallation.equipmentList[0].get('nominal_power'),
+                                currentInstallation.equipmentList[0].get('slope'),
+                                currentInstallation.equipmentList[0].get('azimuth'),
+                                currentInstallation.installation.production
+                            ]);
+                            var jsonDataPredict = JSON.stringify(dataPredict);
+                            console.log('predict: ' + jsonDataPredict);
 
-                        var optionsPredict = {
-                            args: [jsonDataPredict]
-                        };
+                            var optionsPredict = {
+                                args: [jsonDataPredict]
+                            };
 
-                        pythonShell.run(pathScriptPredict, optionsPredict, function (err, resultPredict) {
-                            if (err) {
-                                console.log(err);
-                                res.redirect('/installations');
-                            }
-                            else {
-                                models.technology.findAll({
-                                }).then(function (technologyFind) {
-                                    var currentTechnologies = [];
-                                    technologyFind.forEach(function (technology) {
-                                        if (technology.id == currentInstallation.equipmentList[0].technologyId) {
-                                            currentInstallation.equipmentList[0].technologyId = technology.type;
-                                        }
-                                    });
-                                    var theoricalProduction = resultPredict[0];
-                                    res.render('compare.ejs', { connected: true, currentInstallation: currentInstallation, theoricalProduction: theoricalProduction });
-                                }).catch(function (error) {
-                                    console.log(error);
+                            pythonShell.run(pathScriptPredict, optionsPredict, function (err, resultPredict) {
+                                if (err) {
+                                    console.log(err);
                                     res.redirect('/installations');
-                                });
-                            }
-                        });
-                    }
-                });
+                                }
+                                else {
+                                    models.technology.findAll({
+                                    }).then(function (technologyFind) {
+                                        var currentTechnologies = [];
+                                        technologyFind.forEach(function (technology) {
+                                            if (technology.id == currentInstallation.equipmentList[0].technologyId) {
+                                                currentInstallation.equipmentList[0].technologyId = technology.type;
+                                            }
+                                        });
+                                        var theoricalProduction = resultPredict[0];
+                                        res.render('compare.ejs', { connected: true, currentInstallation: currentInstallation, theoricalProduction: theoricalProduction });
+                                    }).catch(function (error) {
+                                        console.log(error);
+                                        res.redirect('/installations');
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+                else {
+                    res.redirect('/installations');
+                }
             });
         });
     }
 }
-
 
 
 

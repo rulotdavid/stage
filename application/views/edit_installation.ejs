@@ -157,7 +157,7 @@
                 <div class="form-group">
                   <label style="text-align: left;" for="equipment-azimuth" class="col-sm-3 control-label">Azimuth (°)</label>
                   <div class="col-sm-8">
-                    <input required type="number" min="-90" max="90" step="0.01" class="form-control" id="equipment-azimuth" />
+                    <input required type="number" min="90" max="270" step="0.01" class="form-control" id="equipment-azimuth" />
                   </div>
                   <div class="col-sm-1 control-label">
                     <button style="background-color: white;" type="button" onclick="showTipAzimuth()">
@@ -166,8 +166,7 @@
                   </div>
                 </div>
                 <div id="tipAzimuth" hidden>
-                  <p>This is the angle of the PV modules relative to the direction due South. -90 deg. is East, 0 deg. is South
-                    and 90 deg. is West.
+                  <p>This is the angle of the PV modules relative to the direction. From 90° (Est) to 270° (West).
                   </p>
                   </br>
                 </div>
