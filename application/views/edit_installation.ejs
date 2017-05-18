@@ -196,7 +196,7 @@
           var installation = {};
           var mapEquipment = new Map();
 
-          var googleMap;
+          var googleMap = undefined;
           var isCreation = true;
           var countEquipment = 0;
           var currentInstallation = <%- JSON.stringify(currentInstallation) %>;
@@ -428,6 +428,16 @@
           }
 
           $(document).ready(function () {
+            while (true) {
+              if (googleMap == undefined) {
+                initAutocomplete();
+                sleep(250);
+              }
+              else {
+                break;
+              }
+            }
+
             initAutocomplete();
             updateTechnologies();
 
@@ -624,6 +634,15 @@
             else {
               isTipInverterEfficiencyDisplayed = false;
               $('#tipInverterEffeciency').hide();
+            }
+          }
+
+          function sleep(milliseconds) {
+            var start = new Date().getTime();
+            for (var i = 0; i < 1e7; i++) {
+              if ((new Date().getTime() - start) > milliseconds) {
+                break;
+              }
             }
           }
         </script>

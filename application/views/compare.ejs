@@ -17,9 +17,11 @@
                         How to interpret the result?
                     </h3>
                     </br>
-                    If the production prediction is lower than your actual production, it indicates that your installation is working better than the other installations we have.
+                    If the production prediction is lower than your actual production, it indicates that your installation is working better
+                    than the other installations we have.
                     </br>
-                    If the production prediction is lower than your actual production, it indicates that your installation is not performing as well as the other installations we have.
+                    If the production prediction is lower than your actual production, it indicates that your installation is not performing
+                    as well as the other installations we have.
                     </br>
                     </br>
                     Warning: this is a beta version.
@@ -86,7 +88,7 @@
                     async defer></script>
 
                 <script>
-                    var googleMap;
+                    var googleMap = undefined;
                     var currentInstallation = <%- JSON.stringify(currentInstallation) %>;
 
                     function initAutocomplete() {
@@ -98,7 +100,16 @@
                     }
 
                     $(document).ready(function () {
-                        initAutocomplete();
+                        while (true) {
+                            if (googleMap == undefined) {
+                                initAutocomplete();
+                                sleep(250);
+                            }
+                            else {
+                                break;
+                            }
+                        }
+
                         updateLocation(currentInstallation.location);
                         updateInstallation(currentInstallation.installation);
                         updateEquipment(currentInstallation.equipmentList);
@@ -141,6 +152,15 @@
                                 '<td>' + equipment.azimuth + '</td>' +
                                 '</tr>');
                         });
+                    }
+
+                    function sleep(milliseconds) {
+                        var start = new Date().getTime();
+                        for (var i = 0; i < 1e7; i++) {
+                            if ((new Date().getTime() - start) > milliseconds) {
+                                break;
+                            }
+                        }
                     }
                 </script>
     </body>
