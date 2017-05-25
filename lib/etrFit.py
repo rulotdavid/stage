@@ -6,9 +6,11 @@ from sklearn.ensemble import ExtraTreesRegressor
 X = json.loads(sys.argv[1])
 Y = json.loads(sys.argv[2])
 
-forest = ExtraTreesRegressor(n_estimators=1000)
+forest = ExtraTreesRegressor(n_estimators=600, min_samples_split=5, n_jobs=-1)
 forest = forest.fit(X, Y)
+scores = forest.score(X, Y)
+print(scores)
 
-with open("lib\\forest.obj", "wb") as filehandler:
+with open("forest.obj", "wb") as filehandler:
     pickle.dump(forest, filehandler)
 

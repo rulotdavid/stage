@@ -5,9 +5,10 @@ import sys
 
 data = json.loads(sys.argv[1])
 
-with open("lib\\forest.obj", "rb") as filehandler:
+with open("forest.obj", "rb") as filehandler:
     forest = pickle.load(filehandler)
 
 prediction = forest.predict(data)
 print(prediction[0])
+
 
