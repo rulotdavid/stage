@@ -10,15 +10,21 @@ function initAutocomplete() {
 
 $(document).ready(function () {
     while (true) {
-        if (googleMap == undefined) {
-            initAutocomplete();
+        if (google == undefined) {
             sleep(250);
         }
         else {
-            break;
+            if (googleMap == undefined) {
+                initAutocomplete();
+                sleep(250);
+            }
+            else {
+                break;
+            }
         }
     }
 
+    updateAverages();
     updateInstallation(currentInstallation.installation);
     updateEquipment(currentInstallation.equipmentList);
     updateLocation(currentInstallation.location);
@@ -70,4 +76,13 @@ function sleep(milliseconds) {
             break;
         }
     }
+}
+
+function updateAverages() {
+    $('#table-averages tbody').append(
+        '<td>' + averages[0] + '</td>' + 
+        '<td>' + averages[1] + '</td>' +
+        '<td>' + averages[2] + '</td>' +
+        '<td>' + averages[3] + '</td>' +
+        '</tr>');
 }

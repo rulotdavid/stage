@@ -1,457 +1,462 @@
-          var isTipTechnolgyDisplayed = false;
-          var isTipNominalPowerDisplayed = false;
-          var isTipSlopeDisplayed = false;
-          var isTipAzimuthDisplayed = false;
-          var isTipProductionDisplayed = false;
-          var isTipInverterEfficiencyDisplayed = false;
+var isTipTechnolgyDisplayed = false;
+var isTipNominalPowerDisplayed = false;
+var isTipSlopeDisplayed = false;
+var isTipAzimuthDisplayed = false;
+var isTipProductionDisplayed = false;
+var isTipInverterEfficiencyDisplayed = false;
 
-          var address = {};
-          var installation = {};
-          var mapEquipment = new Map();
+var address = {};
+var installation = {};
+var mapEquipment = new Map();
 
-          var googleMap = undefined;
-          var isCreation = true;
-          var countEquipment = 0;
-          
-          function refreshModalCreateEquipment() {
-            $('#form-equipment').attr('action', 'javascript:createEquipment();');
+var googleMap = undefined;
+var isCreation = true;
+var countEquipment = 0;
 
-            $('#equipment-nominal-power').val('');
-            $('#equipment-slope').val('');
-            $('#equipment-azimuth').val('');
-          }
+function refreshModalCreateEquipment() {
+  $('#form-equipment').attr('action', 'javascript:createEquipment();');
 
-          function refreshModalEditEquipment(id) {
-            $('#form-equipment').attr('action', 'javascript:editEquipment(' + id + ');');
+  $('#equipment-nominal-power').val('');
+  $('#equipment-slope').val('');
+  $('#equipment-azimuth').val('');
+}
 
-            $('#equipment-nominal-power').val(mapEquipment.get(id).nominal_power);
-            $('#equipment-slope').val(mapEquipment.get(id).slope);
-            $('#equipment-azimuth').val(mapEquipment.get(id).azimuth);
-          }
+function refreshModalEditEquipment(id) {
+  $('#form-equipment').attr('action', 'javascript:editEquipment(' + id + ');');
 
-          function createEquipment() {
-            var equipment = {
-              technologyId: $('#select-currentTechnologies').val(),
-              nominal_power: $('#equipment-nominal-power').val(),
-              slope: $('#equipment-slope').val(),
-              azimuth: $('#equipment-azimuth').val()
-            };
+  $('#equipment-nominal-power').val(mapEquipment.get(id).nominal_power);
+  $('#equipment-slope').val(mapEquipment.get(id).slope);
+  $('#equipment-azimuth').val(mapEquipment.get(id).azimuth);
+}
 
-            var id = countEquipment++;
-            mapEquipment.set(id, equipment);
+function createEquipment() {
+  var equipment = {
+    technologyId: $('#select-currentTechnologies').val(),
+    nominal_power: $('#equipment-nominal-power').val(),
+    slope: $('#equipment-slope').val(),
+    azimuth: $('#equipment-azimuth').val()
+  };
 
-            var technologyText;
-            currentTechnologies.forEach(function (technology) {
-              if (technology.id == $("#select-currentTechnologies").val()) {
-                technologyText = technology.type;
-              }
-            });
+  var id = countEquipment++;
+  mapEquipment.set(id, equipment);
 
-            $('#table-equipment tbody').append(
-              '<tr id="trEquipment' + id + '">' +
-              '<td>' + technologyText + '</td>' +
-              '<td>' + equipment.nominal_power + '</td>' +
-              '<td>' + equipment.slope + '</td>' +
-              '<td>' + equipment.azimuth + '</td>' +
-              '<td><button onclick="refreshModalEditEquipment(' + id + ');" type="button" class="btn btn-link btn-xs" style="border-color: black;" data-toggle="modal" data-target="#modal-equipment">Edit</button></td>' +
-              '<td><button onclick="deleteEquipment(' + id + ');" type="button" class="btn btn-link btn-xs" style="border-color: black;">Remove</button></td>' +
-              '</tr>');
+  var technologyText;
+  currentTechnologies.forEach(function (technology) {
+    if (technology.id == $("#select-currentTechnologies").val()) {
+      technologyText = technology.type;
+    }
+  });
 
-            $('#modal-equipment').modal('hide');
-            $('#btAddEquipment').hide();
-          }
+  $('#table-equipment tbody').append(
+    '<tr id="trEquipment' + id + '">' +
+    '<td>' + technologyText + '</td>' +
+    '<td>' + equipment.nominal_power + '</td>' +
+    '<td>' + equipment.slope + '</td>' +
+    '<td>' + equipment.azimuth + '</td>' +
+    '<td><button onclick="refreshModalEditEquipment(' + id + ');" type="button" class="btn btn-link btn-xs" style="border-color: black;" data-toggle="modal" data-target="#modal-equipment">Edit</button></td>' +
+    '<td><button onclick="deleteEquipment(' + id + ');" type="button" class="btn btn-link btn-xs" style="border-color: black;">Remove</button></td>' +
+    '</tr>');
 
-          function editEquipment(id) {
-            mapEquipment.get(id).technologyId = $('#select-currentTechnologies').val();
-            mapEquipment.get(id).nominal_power = $('#equipment-nominal-power').val();
-            mapEquipment.get(id).slope = $('#equipment-slope').val();
-            mapEquipment.get(id).azimuth = $('#equipment-azimuth').val();
+  $('#modal-equipment').modal('hide');
+  $('#btAddEquipment').hide();
+}
 
-            var technologyText;
-            currentTechnologies.forEach(function (technology) {
-              if (technology.id == mapEquipment.get(id).technologyId) {
-                technologyText = technology.type;
-              }
-            });
+function editEquipment(id) {
+  mapEquipment.get(id).technologyId = $('#select-currentTechnologies').val();
+  mapEquipment.get(id).nominal_power = $('#equipment-nominal-power').val();
+  mapEquipment.get(id).slope = $('#equipment-slope').val();
+  mapEquipment.get(id).azimuth = $('#equipment-azimuth').val();
 
-            var cells = $('#trEquipment' + id + ' td');
-            cells.eq(0).html(technologyText);
-            cells.eq(1).html(mapEquipment.get(id).nominal_power);
-            cells.eq(2).html(mapEquipment.get(id).slope);
-            cells.eq(3).html(mapEquipment.get(id).azimuth);
+  var technologyText;
+  currentTechnologies.forEach(function (technology) {
+    if (technology.id == mapEquipment.get(id).technologyId) {
+      technologyText = technology.type;
+    }
+  });
 
-            $('#modal-equipment').modal('hide');
-          }
+  var cells = $('#trEquipment' + id + ' td');
+  cells.eq(0).html(technologyText);
+  cells.eq(1).html(mapEquipment.get(id).nominal_power);
+  cells.eq(2).html(mapEquipment.get(id).slope);
+  cells.eq(3).html(mapEquipment.get(id).azimuth);
 
-          function deleteEquipment(id) {
-            swal({
-              title: "Are you sure?",
-              text: "Your will not be able to recover this equipment.",
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonClass: "btn-danger",
-              confirmButtonText: "Yes, delete it!",
-              closeOnConfirm: false
-            },
-              function () {
-                $('#trEquipment' + id).remove();
-                mapEquipment.delete(id);
-                swal('Deleted!', 'Your equipment has been deleted.', 'success');
-                $('#btAddEquipment').show();
-              });
-          }
+  $('#modal-equipment').modal('hide');
+}
 
-          function save() {
-            try {
-              check_input();
+function deleteEquipment(id) {
+  swal({
+    title: "Are you sure?",
+    text: "Your will not be able to recover this equipment.",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonClass: "btn-danger",
+    confirmButtonText: "Yes, delete it!",
+    closeOnConfirm: false
+  },
+    function () {
+      $('#trEquipment' + id).remove();
+      mapEquipment.delete(id);
+      swal('Deleted!', 'Your equipment has been deleted.', 'success');
+      $('#btAddEquipment').show();
+    });
+}
 
-              var equipmentList = [];
-              mapEquipment.forEach(function (equipment) {
-                equipmentList.push(equipment);
-              });
+function save() {
+  try {
+    check_input();
 
-              installation.production = $('#installation-production').val();
-              installation.inverter_efficiency = $('#installation-inverter-efficiency').val();
+    var equipmentList = [];
+    mapEquipment.forEach(function (equipment) {
+      equipmentList.push(equipment);
+    });
 
-              axios.post('/save', {
-                isCreation: isCreation,
-                address: address,
-                installation: installation,
-                equipmentList: equipmentList
-              }).then(function (response) {
-                switch (String(response.data)) {
-                  case '1':
-                    window.location.replace('/installations');
-                    break;
-                  case '-1':
-                    swal('Error', 'Addresse already used', 'error');
-                    break;
-                  case '-2':
-                    swal('Error', 'Creation location failed', 'error');
-                    break;
-                  case '-3':
-                    swal('Error', 'Creation installation failed', 'error');
-                    break;
-                  case '-4':
-                    swal('Error', 'Creation equipment failed', 'error');
-                    break;
-                  case '-5':
-                    swal('Error', 'Verfication location failed', 'error');
-                    break;
-                  case '-6':
-                    swal('Error', 'Update failed', 'error');
-                    break;
-                }
-              }).catch(function (error) {
-                swal('Error', error, 'error');
-              });
-            }
-            catch (e) {
-              swal('Warning', e, 'warning');
-              return;
-            }
-          }
+    installation.production = $('#installation-production').val();
+    installation.inverter_efficiency = $('#installation-inverter-efficiency').val();
 
-          function check_input() {
-            if (address.google_place_id == undefined) {
-              throw 'Location is missing';
-            }
-            else {
-              if (address.street_number == undefined || address.street_number == null) {
-                throw 'Location is not complete';
-              }
-            }
+    axios.post('/save', {
+      isCreation: isCreation,
+      address: address,
+      installation: installation,
+      equipmentList: equipmentList
+    }).then(function (response) {
+      switch (String(response.data)) {
+        case '1':
+          window.location.replace('/installations');
+          break;
+        case '-1':
+          swal('Error', 'Addresse already used', 'error');
+          break;
+        case '-2':
+          swal('Error', 'Creation location failed', 'error');
+          break;
+        case '-3':
+          swal('Error', 'Creation installation failed', 'error');
+          break;
+        case '-4':
+          swal('Error', 'Creation equipment failed', 'error');
+          break;
+        case '-5':
+          swal('Error', 'Verfication location failed', 'error');
+          break;
+        case '-6':
+          swal('Error', 'Update failed', 'error');
+          break;
+      }
+    }).catch(function (error) {
+      swal('Error', error, 'error');
+    });
+  }
+  catch (e) {
+    swal('Warning', e, 'warning');
+    return;
+  }
+}
 
-            if (mapEquipment.size == 0) {
-              throw 'Equipment is missing';
-            }
+function check_input() {
+  if (address.google_place_id == undefined) {
+    throw 'Location is missing';
+  }
+  else {
+    if (address.street_number == undefined || address.street_number == null) {
+      throw 'Location is not complete';
+    }
+  }
 
-            if ($('#installation-production').val().length == 0) {
-              throw 'Production is missing';
-            }
+  if (mapEquipment.size == 0) {
+    throw 'Equipment is missing';
+  }
 
-            if ($('#installation-production').val() < 0) {
-              throw 'Production is not correct';
-            }
+  if ($('#installation-production').val().length == 0) {
+    throw 'Production is missing';
+  }
 
-            if ($('#installation-inverter-efficiency').val().length == 0) {
-              throw 'Inverter efficiency is missing';
-            }
+  if ($('#installation-production').val() < 0) {
+    throw 'Production is not correct';
+  }
 
-            if ($('#installation-inverter-efficiency').val() < 0 || $('#installation-inverter-efficiency').val() > 100) {
-              throw 'Inverter efficiency is not correct';
-            }
-          }
+  if ($('#installation-inverter-efficiency').val().length == 0) {
+    throw 'Inverter efficiency is missing';
+  }
 
-          function initAutocomplete() {
-            googleMap = new google.maps.Map(document.getElementById('googleMap'), {
-              center: { lat: 0, lng: 0 },
-              zoom: 1,
-              mapTypeId: google.maps.MapTypeId.ROADMAP
-            });
+  if ($('#installation-inverter-efficiency').val() < 0 || $('#installation-inverter-efficiency').val() > 100) {
+    throw 'Inverter efficiency is not correct';
+  }
+}
 
-            var input = document.getElementById('pac-input');
-            var searchBox = new google.maps.places.SearchBox(input);
+function initAutocomplete() {
+  googleMap = new google.maps.Map(document.getElementById('googleMap'), {
+    center: { lat: 0, lng: 0 },
+    zoom: 1,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
 
-            googleMap.addListener('bounds_changed', function () {
-              searchBox.setBounds(googleMap.getBounds());
-            });
+  var input = document.getElementById('pac-input');
+  var searchBox = new google.maps.places.SearchBox(input);
 
-            var markers = [];
-            searchBox.addListener('places_changed', function () {
-              var bounds = new google.maps.LatLngBounds();
-              var places = searchBox.getPlaces();
+  googleMap.addListener('bounds_changed', function () {
+    searchBox.setBounds(googleMap.getBounds());
+  });
 
-              if (places.length == 0) {
-                return;
-              }
+  var markers = [];
+  searchBox.addListener('places_changed', function () {
+    var bounds = new google.maps.LatLngBounds();
+    var places = searchBox.getPlaces();
 
-              places.forEach(function (place) {
-                address.google_place_id = place.place_id;
-                address.lat = place.geometry.location.lat();
-                address.lng = place.geometry.location.lng();
-                setComponents(place.address_components);
+    if (places.length == 0) {
+      return;
+    }
 
-                var infowindow = new google.maps.InfoWindow({
-                  content: place.formatted_address
-                });
+    places.forEach(function (place) {
+      address.google_place_id = place.place_id;
+      address.lat = place.geometry.location.lat();
+      address.lng = place.geometry.location.lng();
+      setComponents(place.address_components);
 
-                var marker = new google.maps.Marker({
-                  map: googleMap,
-                  position: place.geometry.location
-                });
+      var infowindow = new google.maps.InfoWindow({
+        content: place.formatted_address
+      });
 
-                marker.addListener('click', function () {
-                  infowindow.open(googleMap, marker);
-                });
+      var marker = new google.maps.Marker({
+        map: googleMap,
+        position: place.geometry.location
+      });
 
-                markers.push(marker);
+      marker.addListener('click', function () {
+        infowindow.open(googleMap, marker);
+      });
 
-                if (place.geometry.viewport) {
-                  bounds.union(place.geometry.viewport);
-                } else {
-                  bounds.extend(place.geometry.location);
-                }
-              });
+      markers.push(marker);
 
-              googleMap.fitBounds(bounds);
-            });
-          }
+      if (place.geometry.viewport) {
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
 
-          $(document).ready(function () {            
-            while (true) {
-              if (googleMap == undefined) {
-                initAutocomplete();
-                sleep(250);
-              }
-              else {
-                break;
-              }
-            }
+    googleMap.fitBounds(bounds);
+  });
+}
 
-            updateTechnologies();
-            
-            if (currentInstallation != null) {
-              isCreation = false;
-              updateLocation(currentInstallation.location);
-              updateInstallation(currentInstallation.installation);
-              updateEquipment(currentInstallation.equipmentList);
-            }
-          });
+$(document).ready(function () {
+  while (true) {
+    if (google == undefined) {
+      sleep(250);
+    }
+    else {
+      if (googleMap == undefined) {
+        initAutocomplete();
+        sleep(250);
+      }
+      else {
+        break;
+      }
+    }
+  }
 
-          function updateLocation(currentLocation) {
-            address = {
-              id: currentLocation.id,
-              google_place_id: currentLocation.google_place_id,
-              lat: currentLocation.lat,
-              lng: currentLocation.lng,
-              street_number: currentLocation.street_number,
-              route: currentLocation.route,
-              locality: currentLocation.locality,
-              postal_code: currentLocation.postal_code,
-              country: currentLocation.country
-            };
+  updateTechnologies();
 
-            var infowindow = new google.maps.InfoWindow();
-            var service = new google.maps.places.PlacesService(googleMap);
-            service.getDetails({
-              placeId: currentLocation.google_place_id
-            },
-              function (place, status) {
-                var marker = new google.maps.Marker({
-                  map: googleMap,
-                  position: place.geometry.location
-                });
-                google.maps.event.addListener(marker, 'click', function () {
-                  infowindow.setContent(address.route + ' ' + address.street_number + ', ' + address.postal_code + ' ' + address.locality + ', ' + address.country);
-                  infowindow.open(googleMap, this);
-                });
+  if (currentInstallation != null) {
+    isCreation = false;
+    updateLocation(currentInstallation.location);
+    updateInstallation(currentInstallation.installation);
+    updateEquipment(currentInstallation.equipmentList);
+  }
+});
 
-              });
+function updateLocation(currentLocation) {
+  address = {
+    id: currentLocation.id,
+    google_place_id: currentLocation.google_place_id,
+    lat: currentLocation.lat,
+    lng: currentLocation.lng,
+    street_number: currentLocation.street_number,
+    route: currentLocation.route,
+    locality: currentLocation.locality,
+    postal_code: currentLocation.postal_code,
+    country: currentLocation.country
+  };
 
-            googleMap.setZoom(15);
-            googleMap.setCenter(new google.maps.LatLng(currentLocation.lat, currentLocation.lng));
-          }
+  var infowindow = new google.maps.InfoWindow();
+  var service = new google.maps.places.PlacesService(googleMap);
+  service.getDetails({
+    placeId: currentLocation.google_place_id
+  },
+    function (place, status) {
+      var marker = new google.maps.Marker({
+        map: googleMap,
+        position: place.geometry.location
+      });
+      google.maps.event.addListener(marker, 'click', function () {
+        infowindow.setContent(address.route + ' ' + address.street_number + ', ' + address.postal_code + ' ' + address.locality + ', ' + address.country);
+        infowindow.open(googleMap, this);
+      });
 
-          function updateInstallation(currentInstallation) {
-            installation.id = currentInstallation.id;
-            $('#installation-production').val(currentInstallation.production);
-            $('#installation-inverter-efficiency').val(currentInstallation.inverter_efficiency);
-          }
+    });
 
-          function updateEquipment(currentEquipment) {
-            $('#btAddEquipment').hide();
+  googleMap.setZoom(15);
+  googleMap.setCenter(new google.maps.LatLng(currentLocation.lat, currentLocation.lng));
+}
 
-            currentEquipment.forEach(function (equipment) {
-              if (equipment.id > countEquipment) {
-                countEquipment = equipment.id;
-              }
-              countEquipment++;
+function updateInstallation(currentInstallation) {
+  installation.id = currentInstallation.id;
+  $('#installation-production').val(currentInstallation.production);
+  $('#installation-inverter-efficiency').val(currentInstallation.inverter_efficiency);
+}
 
-              mapEquipment.set(equipment.id, {
-                id: equipment.id,
-                technologyId: equipment.technologyId,
-                nominal_power: equipment.nominal_power,
-                slope: equipment.slope,
-                azimuth: equipment.azimuth
-              });
+function updateEquipment(currentEquipment) {
+  $('#btAddEquipment').hide();
 
-              var technologyText;
-              currentTechnologies.forEach(function (technology) {
-                if (technology.id == equipment.technologyId) {
-                  technologyText = technology.type;
-                  $("#select-currentTechnologies").val(technology.id);
-                }
-              });
+  currentEquipment.forEach(function (equipment) {
+    if (equipment.id > countEquipment) {
+      countEquipment = equipment.id;
+    }
+    countEquipment++;
 
-              $('#table-equipment tbody').append(
-                '<tr id="trEquipment' + equipment.id + '">' +
-                '<td>' + technologyText + '</td>' +
-                '<td>' + equipment.nominal_power + '</td>' +
-                '<td>' + equipment.slope + '</td>' +
-                '<td>' + equipment.azimuth + '</td>' +
-                '<td><button onclick="refreshModalEditEquipment(' + equipment.id + ');" type="button" class="btn btn-link btn-xs" style="border-color: black;" data-toggle="modal" data-target="#modal-equipment">Edit</button></td>' +
-                '<td><button onclick="deleteEquipment(' + equipment.id + ');" type="button" class="btn btn-link btn-xs" style="border-color: black;">Remove</button></td>' +
-                '</tr>');
-            });
-          }
+    mapEquipment.set(equipment.id, {
+      id: equipment.id,
+      technologyId: equipment.technologyId,
+      nominal_power: equipment.nominal_power,
+      slope: equipment.slope,
+      azimuth: equipment.azimuth
+    });
 
-          function setComponents(address_components) {
-            var street_number = null;
-            var route = null;
-            var locality = null;
-            var postal_code = null;
-            var country = null;
+    var technologyText;
+    currentTechnologies.forEach(function (technology) {
+      if (technology.id == equipment.technologyId) {
+        technologyText = technology.type;
+        $("#select-currentTechnologies").val(technology.id);
+      }
+    });
 
-            address_components.forEach(function (item) {
-              item.types.forEach(function (type) {
-                switch (type) {
-                  case 'street_number':
-                    street_number = item.long_name;
-                    break;
-                  case 'route':
-                    route = item.long_name;
-                    break;
-                  case 'locality':
-                    locality = item.long_name;
-                    break;
-                  case 'postal_code':
-                    postal_code = item.long_name;
-                    break;
-                  case 'country':
-                    country = item.long_name;
-                    break;
-                }
-              });
-            });
+    $('#table-equipment tbody').append(
+      '<tr id="trEquipment' + equipment.id + '">' +
+      '<td>' + technologyText + '</td>' +
+      '<td>' + equipment.nominal_power + '</td>' +
+      '<td>' + equipment.slope + '</td>' +
+      '<td>' + equipment.azimuth + '</td>' +
+      '<td><button onclick="refreshModalEditEquipment(' + equipment.id + ');" type="button" class="btn btn-link btn-xs" style="border-color: black;" data-toggle="modal" data-target="#modal-equipment">Edit</button></td>' +
+      '<td><button onclick="deleteEquipment(' + equipment.id + ');" type="button" class="btn btn-link btn-xs" style="border-color: black;">Remove</button></td>' +
+      '</tr>');
+  });
+}
 
-            address.street_number = street_number;
-            address.route = route;
-            address.locality = locality;
-            address.postal_code = postal_code;
-            address.country = country;
-          }
+function setComponents(address_components) {
+  var street_number = null;
+  var route = null;
+  var locality = null;
+  var postal_code = null;
+  var country = null;
 
-          function updateTechnologies() {
-            currentTechnologies.forEach(function (technology) {
-              $('#select-currentTechnologies').append($('<option>', {
-                value: technology.id,
-                text: technology.type
-              }));
-            });
-          }
+  address_components.forEach(function (item) {
+    item.types.forEach(function (type) {
+      switch (type) {
+        case 'street_number':
+          street_number = item.long_name;
+          break;
+        case 'route':
+          route = item.long_name;
+          break;
+        case 'locality':
+          locality = item.long_name;
+          break;
+        case 'postal_code':
+          postal_code = item.long_name;
+          break;
+        case 'country':
+          country = item.long_name;
+          break;
+      }
+    });
+  });
 
-          function showTipTechnology() {
-            if (isTipTechnolgyDisplayed == false) {
-              isTipTechnolgyDisplayed = true;
-              $('#tipTechnology').show();
-            }
-            else {
-              isTipTechnolgyDisplayed = false;
-              $('#tipTechnology').hide();
-            }
-          }
+  address.street_number = street_number;
+  address.route = route;
+  address.locality = locality;
+  address.postal_code = postal_code;
+  address.country = country;
+}
 
-          function showTipNominalPower() {
-            if (isTipNominalPowerDisplayed == false) {
-              isTipNominalPowerDisplayed = true;
-              $('#tipNominalPower').show();
-            }
-            else {
-              isTipNominalPowerDisplayed = false;
-              $('#tipNominalPower').hide();
-            }
-          }
+function updateTechnologies() {
+  currentTechnologies.forEach(function (technology) {
+    $('#select-currentTechnologies').append($('<option>', {
+      value: technology.id,
+      text: technology.type
+    }));
+  });
+}
 
-          function showTipSlope() {
-            if (isTipSlopeDisplayed == false) {
-              isTipSlopeDisplayed = true;
-              $('#tipSlope').show();
-            }
-            else {
-              isTipSlopeDisplayed = false;
-              $('#tipSlope').hide();
-            }
-          }
+function showTipTechnology() {
+  if (isTipTechnolgyDisplayed == false) {
+    isTipTechnolgyDisplayed = true;
+    $('#tipTechnology').show();
+  }
+  else {
+    isTipTechnolgyDisplayed = false;
+    $('#tipTechnology').hide();
+  }
+}
 
-          function showTipAzimuth() {
-            if (isTipAzimuthDisplayed == false) {
-              isTipAzimuthDisplayed = true;
-              $('#tipAzimuth').show();
-            }
-            else {
-              isTipAzimuthDisplayed = false;
-              $('#tipAzimuth').hide();
-            }
-          }
+function showTipNominalPower() {
+  if (isTipNominalPowerDisplayed == false) {
+    isTipNominalPowerDisplayed = true;
+    $('#tipNominalPower').show();
+  }
+  else {
+    isTipNominalPowerDisplayed = false;
+    $('#tipNominalPower').hide();
+  }
+}
 
-          function showTipProduction() {
-            if (isTipProductionDisplayed == false) {
-              isTipProductionDisplayed = true;
-              $('#tipProduction').show();
-            }
-            else {
-              isTipProductionDisplayed = false;
-              $('#tipProduction').hide();
-            }
-          }
+function showTipSlope() {
+  if (isTipSlopeDisplayed == false) {
+    isTipSlopeDisplayed = true;
+    $('#tipSlope').show();
+  }
+  else {
+    isTipSlopeDisplayed = false;
+    $('#tipSlope').hide();
+  }
+}
 
-          function showTipInverterEfficiency() {
-            if (isTipInverterEfficiencyDisplayed == false) {
-              isTipInverterEfficiencyDisplayed = true;
-              $('#tipInverterEffeciency').show();
-            }
-            else {
-              isTipInverterEfficiencyDisplayed = false;
-              $('#tipInverterEffeciency').hide();
-            }
-          }
+function showTipAzimuth() {
+  if (isTipAzimuthDisplayed == false) {
+    isTipAzimuthDisplayed = true;
+    $('#tipAzimuth').show();
+  }
+  else {
+    isTipAzimuthDisplayed = false;
+    $('#tipAzimuth').hide();
+  }
+}
 
-          function sleep(milliseconds) {
-            var start = new Date().getTime();
-            for (var i = 0; i < 1e7; i++) {
-              if ((new Date().getTime() - start) > milliseconds) {
-                break;
-              }
-            }
-          }
+function showTipProduction() {
+  if (isTipProductionDisplayed == false) {
+    isTipProductionDisplayed = true;
+    $('#tipProduction').show();
+  }
+  else {
+    isTipProductionDisplayed = false;
+    $('#tipProduction').hide();
+  }
+}
+
+function showTipInverterEfficiency() {
+  if (isTipInverterEfficiencyDisplayed == false) {
+    isTipInverterEfficiencyDisplayed = true;
+    $('#tipInverterEffeciency').show();
+  }
+  else {
+    isTipInverterEfficiencyDisplayed = false;
+    $('#tipInverterEffeciency').hide();
+  }
+}
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds) {
+      break;
+    }
+  }
+}

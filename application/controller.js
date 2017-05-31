@@ -366,6 +366,10 @@ exports.comparePOST = function (req, res) {
         };
         var X = [];
         var Y = [];
+        var inverter_efficiency_average = 0;
+        var slope_average = 0;
+        var azimuth_average = 0;
+        var nominal_power_average = 0;
 
         models.location.all().then(function (locationListFind) {
             var allData = Promise.map(locationListFind, function (locationFind) {
@@ -389,6 +393,11 @@ exports.comparePOST = function (req, res) {
                             currentInstallation.equipmentList.push(equipmentFind);
                         }
                         else {
+                            inverter_efficiency_average += installationFind.get('inverter_efficiency');
+                            slope_average += equipmentFind.get('slope');
+                            azimuth_average += equipmentFind.get('azimuth');
+                            nominal_power_average += equipmentFind.get('nominal_power');
+
                             var add = [
                                 Number(locationFind.get('lat')),
                                 Number(locationFind.get('lng')),
@@ -396,22 +405,32 @@ exports.comparePOST = function (req, res) {
                                 equipmentFind.get('technologyId'),
                                 equipmentFind.get('nominal_power'),
                                 equipmentFind.get('slope'),
-                                equipmentFind.get('azimuth'),
-                                installationFind.get('production')
+                                equipmentFind.get('azimuth')
                             ];
                             X.push(add);
-                            Y.push(installationFind.production);
+                            Y.push(installationFind.get('production'));
                         }
                     });
                 });
             });
 
             Promise.all(allData).then(function () {
-                if (Y.length != 0) {
+                var nbElements = Y.length; //X or Y is the same
+                if (nbElements != 0) {
+                    var averages = [];
                     var jsonX = JSON.stringify(X);
-                    var jsonY = JSON.stringify(Y);
+                    var jsonY = JSON.stringify(Y);                    
                     console.log('X: ' + jsonX);
                     console.log('Y: ' + jsonY);
+
+                    inverter_efficiency_average = inverter_efficiency_average / nbElements;
+                    slope_average = slope_average / nbElements;
+                    azimuth_average = azimuth_average / nbElements;
+                    nominal_power_average = nominal_power_average / nbElements;
+                    averages.push(inverter_efficiency_average.toFixed(3));
+                    averages.push(slope_average.toFixed(3));
+                    averages.push(azimuth_average.toFixed(3));
+                    averages.push(nominal_power_average.toFixed(3));
 
                     var optionsFit = {
                         args: [jsonX, jsonY]
@@ -431,8 +450,7 @@ exports.comparePOST = function (req, res) {
                                 currentInstallation.equipmentList[0].get('technologyId'),
                                 currentInstallation.equipmentList[0].get('nominal_power'),
                                 currentInstallation.equipmentList[0].get('slope'),
-                                currentInstallation.equipmentList[0].get('azimuth'),
-                                currentInstallation.installation.production
+                                currentInstallation.equipmentList[0].get('azimuth')
                             ]);
                             var jsonDataPredict = JSON.stringify(dataPredict);
                             console.log('predict: ' + jsonDataPredict);
@@ -455,8 +473,8 @@ exports.comparePOST = function (req, res) {
                                                 currentInstallation.equipmentList[0].technologyId = technology.type;
                                             }
                                         });
-                                        var theoricalProduction = resultPredict[0];
-                                        res.render('compare.ejs', { connected: true, currentInstallation: currentInstallation, theoricalProduction: theoricalProduction });
+                                        var theoricalProduction = Number(resultPredict[0]).toFixed(3);
+                                        res.render('compare.ejs', { connected: true, currentInstallation: currentInstallation, theoricalProduction: theoricalProduction, averages: averages });
                                     }).catch(function (error) {
                                         console.log(error);
                                         res.redirect('/installations');

@@ -23,6 +23,30 @@
                     If the production prediction is lower than your actual production, it indicates that your installation is not performing
                     as well as the other installations we have.
                     </br>
+                    <h3>To help you, here is an average of the characteristics of the installations in your area:</h3>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-3">
+                            </div>
+                            <div class="col-md-6">
+                                <table border="1" style="border-color: black;" class="table table-hover" id="table-averages">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;">Inverter efficiency (%)</th>
+                                            <th style="text-align: center;">Slope (°)</th>
+                                            <th style="text-align: center;">Azimuth (°)</th>
+                                            <th style="text-align: center;">Nominal power (wp)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-3">
+                            </div>
+                        </div>
+                    </div>
+                    </br>
                     </br>
                     Warning: this is a beta version.
                     </br>
@@ -84,12 +108,13 @@
             </br>
 
             <% include partials/script.ejs %>
-            <script>
-                var currentInstallation = <%- JSON.stringify(currentInstallation) %>;
-            </script>
+                <script>
+                    var currentInstallation = <%- JSON.stringify(currentInstallation) %>;
+                    var averages = <%- JSON.stringify(averages) %>;
+                </script>
 
-            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdv3Y8l7bUtzaqTkzawCBroYZqOIaWeaI&language=en&libraries=places"
-                async defer></script>
+                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdv3Y8l7bUtzaqTkzawCBroYZqOIaWeaI&language=en&libraries=places"
+                    async defer></script>
                 <script src="/js/scripts/compare.js"></script>
     </body>
 
