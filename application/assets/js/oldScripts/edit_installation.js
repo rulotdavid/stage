@@ -239,7 +239,16 @@ function initAutocomplete() {
 }
 
 $(document).ready(function () {
+  updateTechnologies();
+
+  if (currentInstallation != null) {
+    isCreation = false;
+    updateInstallation(currentInstallation.installation);
+    updateEquipment(currentInstallation.equipmentList);
+  }
+
   while (true) {
+    console.log('WAIT GOOGLE');
     if (google == undefined) {
       sleep(250);
     }
@@ -254,13 +263,8 @@ $(document).ready(function () {
     }
   }
 
-  updateTechnologies();
-
   if (currentInstallation != null) {
-    isCreation = false;
     updateLocation(currentInstallation.location);
-    updateInstallation(currentInstallation.installation);
-    updateEquipment(currentInstallation.equipmentList);
   }
 });
 

@@ -23,7 +23,7 @@
                     If the production prediction is lower than your actual production, it indicates that your installation is not performing
                     as well as the other installations we have.
                     </br>
-                    <h3>To help you, here is an average of the characteristics of the installations in your area:</h3>
+                    <h3>To help you, here is an average of all the installations we possess:</h3>
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-3">
@@ -47,11 +47,41 @@
                         </div>
                     </div>
                     </br>
+                    <h3>And a average of the installations in your area:</h3>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-3">
+                            </div>
+                            <div class="col-md-6">
+                                <table border="1" style="border-color: black;" class="table table-hover" id="table-local-averages">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;">Inverter efficiency (%)</th>
+                                            <th style="text-align: center;">Slope (°)</th>
+                                            <th style="text-align: center;">Azimuth (°)</th>
+                                            <th style="text-align: center;">Nominal power (wp)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-3">
+                            </div>
+                        </div>
+                    </div>
+                    </br>
+                    <h3>Here is a list of the characteristics that can influence your production:</h3>
+                    <ul>
+                        <li>Wear of panels, connections, wiring, inverter, ...</li>
+                        <li>Shadow, snow, dirt, ...</li>
+                    </ul>
                     </br>
                     Warning: this is a beta version.
                     </br>
                 </div>
             </div>
+
             </br>
             <h1 style="text-align: center;">Summary of your installation</h1>
             </br>
@@ -111,11 +141,12 @@
                 <script>
                     var currentInstallation = <%- JSON.stringify(currentInstallation) %>;
                     var averages = <%- JSON.stringify(averages) %>;
+                    var local_averages = <%- JSON.stringify(local_averages) %>;
                 </script>
 
                 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdv3Y8l7bUtzaqTkzawCBroYZqOIaWeaI&language=en&libraries=places"
                     async defer></script>
-                <script src="/js/scripts/compare.js"></script>
+                <script src="/js/oldScripts/compare.js"></script>
     </body>
 
 </html>

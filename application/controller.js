@@ -364,129 +364,161 @@ exports.comparePOST = function (req, res) {
             installation: null,
             equipmentList: []
         };
+        var currentPostalCodeFind = false;
         var X = [];
         var Y = [];
         var inverter_efficiency_average = 0;
         var slope_average = 0;
         var azimuth_average = 0;
         var nominal_power_average = 0;
+        var local_nbElements = 0;
+        var local_inverter_efficiency_average = 0;
+        var local_slope_average = 0;
+        var local_azimuth_average = 0;
+        var local_nominal_power_average = 0;
 
-        models.location.all().then(function (locationListFind) {
-            var allData = Promise.map(locationListFind, function (locationFind) {
-                if (locationFind.get('id') == req.body.locationId) {
-                    currentInstallation.location = locationFind;
-                }
-                return models.installation.findOne({
-                    where: {
-                        locationId: locationFind.id
+        models.location.findOne({
+            where: {
+                id: req.body.locationId
+            }
+        }).then(function (locationPostalCode) {
+            models.location.all().then(function (locationListFind) {
+                var allData = Promise.map(locationListFind, function (locationFind) {
+                    if (locationFind.get('id') == req.body.locationId) {
+                        currentInstallation.location = locationFind;
                     }
-                }).then(function (installationFind) {
-                    if (currentInstallation.location != null && installationFind.locationId == currentInstallation.location.get('id')) {
-                        currentInstallation.installation = installationFind;
-                    }
-                    return models.equipment.findOne({
+                    return models.installation.findOne({
                         where: {
-                            installationId: installationFind.id
+                            locationId: locationFind.id
                         }
-                    }).then(function (equipmentFind) {
-                        if (currentInstallation.installation != null && equipmentFind.installationId == currentInstallation.installation.get('id')) {
-                            currentInstallation.equipmentList.push(equipmentFind);
+                    }).then(function (installationFind) {
+                        if (currentInstallation.location != null && installationFind.locationId == currentInstallation.location.get('id')) {
+                            currentInstallation.installation = installationFind;
                         }
-                        else {
-                            inverter_efficiency_average += installationFind.get('inverter_efficiency');
-                            slope_average += equipmentFind.get('slope');
-                            azimuth_average += equipmentFind.get('azimuth');
-                            nominal_power_average += equipmentFind.get('nominal_power');
+                        return models.equipment.findOne({
+                            where: {
+                                installationId: installationFind.id
+                            }
+                        }).then(function (equipmentFind) {
+                            if (currentInstallation.installation != null && equipmentFind.installationId == currentInstallation.installation.get('id')) {
+                                currentInstallation.equipmentList.push(equipmentFind);
+                            }
+                            else {
+                                inverter_efficiency_average += installationFind.get('inverter_efficiency');
+                                slope_average += equipmentFind.get('slope');
+                                azimuth_average += equipmentFind.get('azimuth');
+                                nominal_power_average += equipmentFind.get('nominal_power');
 
-                            var add = [
-                                Number(locationFind.get('lat')),
-                                Number(locationFind.get('lng')),
-                                installationFind.get('inverter_efficiency'),
-                                equipmentFind.get('technologyId'),
-                                equipmentFind.get('nominal_power'),
-                                equipmentFind.get('slope'),
-                                equipmentFind.get('azimuth')
-                            ];
-                            X.push(add);
-                            Y.push(installationFind.get('production'));
-                        }
+                                if (locationPostalCode.get('postal_code') == locationFind.get('postal_code')) {
+                                    local_nbElements++;
+                                    local_inverter_efficiency_average += installationFind.get('inverter_efficiency');
+                                    local_slope_average += equipmentFind.get('slope');
+                                    local_azimuth_average += equipmentFind.get('azimuth');
+                                    local_nominal_power_average += equipmentFind.get('nominal_power');
+                                }
+
+                                var add = [
+                                    Number(locationFind.get('lat')),
+                                    Number(locationFind.get('lng')),
+                                    installationFind.get('inverter_efficiency'),
+                                    equipmentFind.get('technologyId'),
+                                    equipmentFind.get('nominal_power'),
+                                    equipmentFind.get('slope'),
+                                    equipmentFind.get('azimuth')
+                                ];
+                                X.push(add);
+                                Y.push(installationFind.get('production'));
+                            }
+                        });
                     });
                 });
-            });
 
-            Promise.all(allData).then(function () {
-                var nbElements = Y.length; //X or Y is the same
-                if (nbElements != 0) {
-                    var averages = [];
-                    var jsonX = JSON.stringify(X);
-                    var jsonY = JSON.stringify(Y);                    
-                    console.log('X: ' + jsonX);
-                    console.log('Y: ' + jsonY);
+                Promise.all(allData).then(function () {
+                    var nbElements = Y.length; //X or Y is the same
+                    if (nbElements != 0) {
+                        var averages = [];
+                        var local_averages = [];
+                        var jsonX = JSON.stringify(X);
+                        var jsonY = JSON.stringify(Y);
+                        console.log('X: ' + jsonX);
+                        console.log('Y: ' + jsonY);
 
-                    inverter_efficiency_average = inverter_efficiency_average / nbElements;
-                    slope_average = slope_average / nbElements;
-                    azimuth_average = azimuth_average / nbElements;
-                    nominal_power_average = nominal_power_average / nbElements;
-                    averages.push(inverter_efficiency_average.toFixed(3));
-                    averages.push(slope_average.toFixed(3));
-                    averages.push(azimuth_average.toFixed(3));
-                    averages.push(nominal_power_average.toFixed(3));
+                        inverter_efficiency_average = inverter_efficiency_average / nbElements;
+                        slope_average = slope_average / nbElements;
+                        azimuth_average = azimuth_average / nbElements;
+                        nominal_power_average = nominal_power_average / nbElements;
+                        averages.push(inverter_efficiency_average.toFixed(3));
+                        averages.push(slope_average.toFixed(3));
+                        averages.push(azimuth_average.toFixed(3));
+                        averages.push(nominal_power_average.toFixed(3));
 
-                    var optionsFit = {
-                        args: [jsonX, jsonY]
-                    };
-
-                    pythonShell.run(pathScriptFit, optionsFit, function (err) {
-                        if (err) {
-                            console.log(err);
-                            res.redirect('/installations');
+                        if (local_nbElements > 0) {
+                            local_inverter_efficiency_average = local_inverter_efficiency_average / local_nbElements;
+                            local_slope_average = local_slope_average / local_nbElements;
+                            local_azimuth_average = local_azimuth_average / local_nbElements;
+                            local_nominal_power_average = local_nominal_power_average / local_nbElements;
+                            local_averages.push(local_inverter_efficiency_average.toFixed(3));
+                            local_averages.push(local_slope_average.toFixed(3));
+                            local_averages.push(local_azimuth_average.toFixed(3));
+                            local_averages.push(local_nominal_power_average.toFixed(3));
                         }
-                        else {
-                            var dataPredict = [];
-                            dataPredict.push([
-                                Number(currentInstallation.location.get('lat')),
-                                Number(currentInstallation.location.get('lng')),
-                                currentInstallation.installation.get('inverter_efficiency'),
-                                currentInstallation.equipmentList[0].get('technologyId'),
-                                currentInstallation.equipmentList[0].get('nominal_power'),
-                                currentInstallation.equipmentList[0].get('slope'),
-                                currentInstallation.equipmentList[0].get('azimuth')
-                            ]);
-                            var jsonDataPredict = JSON.stringify(dataPredict);
-                            console.log('predict: ' + jsonDataPredict);
 
-                            var optionsPredict = {
-                                args: [jsonDataPredict]
-                            };
+                        var optionsFit = {
+                            args: [jsonX, jsonY]
+                        };
 
-                            pythonShell.run(pathScriptPredict, optionsPredict, function (err, resultPredict) {
-                                if (err) {
-                                    console.log(err);
-                                    res.redirect('/installations');
-                                }
-                                else {
-                                    models.technology.findAll({
-                                    }).then(function (technologyFind) {
-                                        var currentTechnologies = [];
-                                        technologyFind.forEach(function (technology) {
-                                            if (technology.id == currentInstallation.equipmentList[0].technologyId) {
-                                                currentInstallation.equipmentList[0].technologyId = technology.type;
-                                            }
-                                        });
-                                        var theoricalProduction = Number(resultPredict[0]).toFixed(3);
-                                        res.render('compare.ejs', { connected: true, currentInstallation: currentInstallation, theoricalProduction: theoricalProduction, averages: averages });
-                                    }).catch(function (error) {
-                                        console.log(error);
+                        pythonShell.run(pathScriptFit, optionsFit, function (err) {
+                            if (err) {
+                                console.log(err);
+                                res.redirect('/installations');
+                            }
+                            else {
+                                var dataPredict = [];
+                                dataPredict.push([
+                                    Number(currentInstallation.location.get('lat')),
+                                    Number(currentInstallation.location.get('lng')),
+                                    currentInstallation.installation.get('inverter_efficiency'),
+                                    currentInstallation.equipmentList[0].get('technologyId'),
+                                    currentInstallation.equipmentList[0].get('nominal_power'),
+                                    currentInstallation.equipmentList[0].get('slope'),
+                                    currentInstallation.equipmentList[0].get('azimuth')
+                                ]);
+                                var jsonDataPredict = JSON.stringify(dataPredict);
+                                console.log('predict: ' + jsonDataPredict);
+
+                                var optionsPredict = {
+                                    args: [jsonDataPredict]
+                                };
+
+                                pythonShell.run(pathScriptPredict, optionsPredict, function (err, resultPredict) {
+                                    if (err) {
+                                        console.log(err);
                                         res.redirect('/installations');
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-                else {
-                    res.redirect('/installations');
-                }
+                                    }
+                                    else {
+                                        models.technology.findAll({
+                                        }).then(function (technologyFind) {
+                                            var currentTechnologies = [];
+                                            technologyFind.forEach(function (technology) {
+                                                if (technology.id == currentInstallation.equipmentList[0].technologyId) {
+                                                    currentInstallation.equipmentList[0].technologyId = technology.type;
+                                                }
+                                            });
+                                            var theoricalProduction = Number(resultPredict[0]).toFixed(3);
+                                            res.render('compare.ejs', { connected: true, currentInstallation: currentInstallation, theoricalProduction: theoricalProduction, averages: averages, local_averages: local_averages });
+                                        }).catch(function (error) {
+                                            console.log(error);
+                                            res.redirect('/installations');
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        res.redirect('/installations');
+                    }
+                });
             });
         });
     }

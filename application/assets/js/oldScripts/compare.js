@@ -9,7 +9,13 @@ function initAutocomplete() {
 }
 
 $(document).ready(function () {
+    updateAverages();
+    updateLocalAverages();
+    updateInstallation(currentInstallation.installation);
+    updateEquipment(currentInstallation.equipmentList);
+
     while (true) {
+        console.log('WAIT GOOGLE');
         if (google == undefined) {
             sleep(250);
         }
@@ -24,9 +30,6 @@ $(document).ready(function () {
         }
     }
 
-    updateAverages();
-    updateInstallation(currentInstallation.installation);
-    updateEquipment(currentInstallation.equipmentList);
     updateLocation(currentInstallation.location);
 });
 
@@ -80,9 +83,28 @@ function sleep(milliseconds) {
 
 function updateAverages() {
     $('#table-averages tbody').append(
-        '<td>' + averages[0] + '</td>' + 
+        '<td>' + averages[0] + '</td>' +
         '<td>' + averages[1] + '</td>' +
         '<td>' + averages[2] + '</td>' +
         '<td>' + averages[3] + '</td>' +
         '</tr>');
+}
+
+function updateLocalAverages() {
+    if (local_averages.length == 0) {
+        $('#table-local-averages tbody').append(
+            '<td>No Data</td>' +
+            '<td>No Data</td>' +
+            '<td>No Data</td>' +
+            '<td>No Data</td>' +
+            '</tr>');
+    }
+    else {
+        $('#table-local-averages tbody').append(
+            '<td>' + local_averages[0] + '</td>' +
+            '<td>' + local_averages[1] + '</td>' +
+            '<td>' + local_averages[2] + '</td>' +
+            '<td>' + local_averages[3] + '</td>' +
+            '</tr>');
+    }
 }
