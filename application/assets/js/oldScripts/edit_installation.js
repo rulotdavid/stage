@@ -247,24 +247,31 @@ $(document).ready(function () {
     updateEquipment(currentInstallation.equipmentList);
   }
 
+  var nbSleep = 0;
   while (true) {
     console.log('WAIT GOOGLE');
-    if (google == undefined) {
-      sleep(250);
+    nbSleep++;
+    if (nbSleep == 20) {
+      break;
     }
     else {
-      if (googleMap == undefined) {
-        initAutocomplete();
+      if (typeof google == 'undefined') {
         sleep(250);
       }
       else {
-        break;
+        if (typeof googleMap == 'undefined') {
+          initAutocomplete();
+          sleep(250);
+        }
+        else {
+          $('#errorLoadGM').hide();
+          if (currentInstallation != null) {
+            updateLocation(currentInstallation.location);
+          }
+          break;
+        }
       }
     }
-  }
-
-  if (currentInstallation != null) {
-    updateLocation(currentInstallation.location);
   }
 });
 

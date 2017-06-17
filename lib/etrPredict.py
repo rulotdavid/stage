@@ -5,10 +5,10 @@ import sys
 
 data = json.loads(sys.argv[1])
 
-with open("forest.obj", "rb") as filehandler:
-    forest = pickle.load(filehandler)
+with open("ETR.obj", "rb") as filehandler:
+    ETR = pickle.load(filehandler)
 
-prediction = forest.predict(data)
+prediction = ETR.predict(data)
 print(prediction[0])
 
 

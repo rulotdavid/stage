@@ -14,23 +14,30 @@ $(document).ready(function () {
     updateInstallation(currentInstallation.installation);
     updateEquipment(currentInstallation.equipmentList);
 
+    var nbSleep = 0;
     while (true) {
         console.log('WAIT GOOGLE');
-        if (google == undefined) {
-            sleep(250);
+        nbSleep++;
+        if (nbSleep == 20) {
+            break;
         }
         else {
-            if (googleMap == undefined) {
-                initAutocomplete();
+            if (typeof google == 'undefined') {
                 sleep(250);
             }
             else {
-                break;
+                if (typeof googleMap == 'undefined') {
+                    initAutocomplete();
+                    sleep(250);
+                }
+                else {
+                    $('#errorLoadGM').hide();
+                    updateLocation(currentInstallation.location);
+                    break;
+                }
             }
         }
     }
-
-    updateLocation(currentInstallation.location);
 });
 
 function updateLocation(currentLocation) {
