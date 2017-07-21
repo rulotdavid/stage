@@ -17,73 +17,133 @@
                         How to interpret the result?
                     </h3>
                     </br>
-                    If the production prediction is lower than your actual production, it indicates that your installation is working better
-                    than the other installations we have.
-                    </br>
-                    If the production prediction is lower than your actual production, it indicates that your installation is not performing
-                    as well as the other installations we have.
-                    </br>
-                    <h3>To help you, here is an average of all the installations we possess:</h3>
-                    <div class="container-fluid">
+                    <h4>
+                        If the production prediction is lower than your actual production, it indicates that your installation is working better
+                        than the other installations we have.
+                        </br>
+                        If the production prediction is lower than your actual production, it indicates that your installation is not performing
+                        as well as the other installations we have.
+                        </br>
+                    </h4>
+
+                    <div style="border-color: black; border-style: solid; margin-left: 10px; margin-right: 10px;" class="container-fluid">
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-6">
+                                <h3>Average</h3>
+                                <h3>Here is an average of all the installations we possess:</h3>
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                        </div>
+                                        <div class="col-md-10">
+                                            <table border="1" style="border-color: black;" class="table table-hover" id="table-averages">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="text-align: center;">Inverter efficiency (%)</th>
+                                                        <th style="text-align: center;">Slope (°)</th>
+                                                        <th style="text-align: center;">Azimuth (°)</th>
+                                                        <th style="text-align: center;">Nominal power (wp)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-1">
+                                        </div>
+                                    </div>
+                                </div>
+                                </br>
+                                <h3>Here is a average of the installations in your area:</h3>
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                        </div>
+                                        <div class="col-md-10">
+                                            <table border="1" style="border-color: black;" class="table table-hover" id="table-local-averages">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="text-align: center;">Inverter efficiency (%)</th>
+                                                        <th style="text-align: center;">Slope (°)</th>
+                                                        <th style="text-align: center;">Azimuth (°)</th>
+                                                        <th style="text-align: center;">Nominal power (wp)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-1">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <table border="1" style="border-color: black;" class="table table-hover" id="table-averages">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: center;">Inverter efficiency (%)</th>
-                                            <th style="text-align: center;">Slope (°)</th>
-                                            <th style="text-align: center;">Azimuth (°)</th>
-                                            <th style="text-align: center;">Nominal power (wp)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-md-3">
+                                <h3>Influence</h3>
+                                <h3>Here is a list of features and their influence on your installation.</h3>
+                                <b>Location</b> =
+                                <%= locationInfluence %> %
+                                    </br>
+                                    <b>Inverter efficiency</b> =
+                                    <%= inverterInfluence %> %
+                                        </br>
+                                        <b>Technology</b> =
+                                        <%= technologyInfluence %> %
+                                            </br>
+                                            <b>Nominal power</b> =
+                                            <%= npInfluence %> %
+                                                </br>
+                                                <b>Slope</b> =
+                                                <%= slopeInfluence %> %
+                                                    </br>
+                                                    <b>Azimuth</b> =
+                                                    <%= azimuthInfluence %> %
+                                                        </br>
+                                                        </br>
+                                                        <h3>Here is a list of the characteristics that can influence your production.
+                                                            </br>
+                                                            You can improve them to upgrade your production:</h3>
+                                                        <!-- Quality of each photovoltaic panel, its wear and age
+                                                        </br>
+                                                        Quality of the operation of the inverter, as well as its age
+                                                        </br>
+                                                        Quality of wiring and its wear
+                                                        </br>
+                                                        Quality of the connections between the panels, the invereter, the wiring of the house
+                                                        </br>
+                                                        Percentage of dirt (dust, leaf, ...)
+                                                        </br>
+                                                        Percentage of shading
+                                                        </br>
+                                                        Percentage of snow
+                                                        </br>
+                                                        Light-induced degradation -->
+                                                        <ul>
+                                                            <li>Quality of each photovoltaic panel, its wear and age</li>
+                                                            <li>Quality of the operation of the inverter, as well as its age</li>
+                                                            <li>Quality of wiring and its wear</li>
+                                                            <li>Quality of the connections between the panels, the invereter, the wiring of the house</li>
+                                                            <li>Percentage of dirt (dust, leaf, ...)</li>
+                                                            <li>Percentage of shading</li>
+                                                            <li>Light-induced degradation</li>
+                                                        </ul>
                             </div>
                         </div>
+                        </br>
                     </div>
-                    </br>
-                    <h3>And a average of the installations in your area:</h3>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-3">
-                            </div>
-                            <div class="col-md-6">
-                                <table border="1" style="border-color: black;" class="table table-hover" id="table-local-averages">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: center;">Inverter efficiency (%)</th>
-                                            <th style="text-align: center;">Slope (°)</th>
-                                            <th style="text-align: center;">Azimuth (°)</th>
-                                            <th style="text-align: center;">Nominal power (wp)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-md-3">
-                            </div>
-                        </div>
-                    </div>
-                    </br>
-                    <h3>Here is a list of the characteristics that can influence your production:</h3>
-                    <ul>
-                        <li>Wear of panels, connections, wiring, inverter, ...</li>
-                        <li>Shadow, snow, dirt, ...</li>
-                    </ul>
+
                     </br>
                     Warning: this is a beta version.
-                    </br>
                 </div>
             </div>
 
             </br>
             <h1 style="text-align: center;">Summary of your installation</h1>
+            </br>
+            <form style="text-align: center;" method="post" action="/installation/edit">
+                <input type="hidden" value="<%= locationId %>" name="locationId" />
+                <input type="submit" value="A mistake in your installation? Edit it!" class="btn btn-primary" />
+            </form>
             </br>
             <div class="container-fluid">
                 <div class="row">

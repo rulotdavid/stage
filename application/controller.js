@@ -504,8 +504,21 @@ exports.comparePOST = function (req, res) {
                                                     currentInstallation.equipmentList[0].technologyId = technology.type;
                                                 }
                                             });
+
                                             var theoricalProduction = Number(resultPredict[0]).toFixed(3);
-                                            res.render('compare.ejs', { connected: true, currentInstallation: currentInstallation, theoricalProduction: theoricalProduction, averages: averages, local_averages: local_averages });
+
+                                            var latInfluence = Number(resultPredict[1]);
+                                            var lngInfluence = Number(resultPredict[2]);
+                                            var locationInfluenceNumber = latInfluence + lngInfluence;
+                                            var locationInfluence = locationInfluenceNumber + ' ';
+                                            locationInfluence = locationInfluence.slice(0, 6);
+                                            var inverterInfluence = resultPredict[3].slice(0, 6);
+                                            var technologyInfluence = resultPredict[4].slice(0, 6);
+                                            var npInfluence = resultPredict[5].slice(0, 6);
+                                            var slopeInfluence = resultPredict[6].slice(0, 6);
+                                            var azimuthInfluence = resultPredict[7].slice(0, 6);
+
+                                            res.render('compare.ejs', { connected: true, currentInstallation: currentInstallation, theoricalProduction: theoricalProduction, averages: averages, local_averages: local_averages, locationId: req.body.locationId, locationInfluence: locationInfluence, inverterInfluence: inverterInfluence, technologyInfluence: technologyInfluence, technologyInfluence: technologyInfluence, npInfluence: npInfluence, slopeInfluence : slopeInfluence, azimuthInfluence: azimuthInfluence});
                                         }).catch(function (error) {
                                             console.log(error);
                                             res.redirect('/installations');
