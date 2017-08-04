@@ -509,14 +509,29 @@ exports.comparePOST = function (req, res) {
 
                                             var latInfluence = Number(resultPredict[1]);
                                             var lngInfluence = Number(resultPredict[2]);
-                                            var locationInfluenceNumber = latInfluence + lngInfluence;
+                                            var locationInfluenceNumber = (latInfluence + lngInfluence) * 100;
                                             var locationInfluence = locationInfluenceNumber + ' ';
                                             locationInfluence = locationInfluence.slice(0, 6);
-                                            var inverterInfluence = resultPredict[3].slice(0, 6);
-                                            var technologyInfluence = resultPredict[4].slice(0, 6);
-                                            var npInfluence = resultPredict[5].slice(0, 6);
-                                            var slopeInfluence = resultPredict[6].slice(0, 6);
-                                            var azimuthInfluence = resultPredict[7].slice(0, 6);
+
+                                            var inverterInfluenceNumber = Number(resultPredict[3]) * 100;
+                                            var inverterInfluenceString = inverterInfluenceNumber + ' ';
+                                            var inverterInfluence = inverterInfluenceString.slice(0, 6);
+
+                                            var technologyInfluenceNumber = Number(resultPredict[4]) * 100;
+                                            var technologyInfluenceString = technologyInfluenceNumber + ' ';
+                                            var technologyInfluence = technologyInfluenceString.slice(0, 6);
+
+                                            var npInfluenceNumber = Number(resultPredict[5]) * 100;
+                                            var npInfluenceString = npInfluenceNumber + ' ';
+                                            var npInfluence = npInfluenceString.slice(0, 6);
+
+                                            var slopeInfluenceNumber = Number(resultPredict[6]) * 100;
+                                            var slopeInfluenceString = slopeInfluenceNumber + ' ';
+                                            var slopeInfluence = slopeInfluenceString.slice(0, 6);
+
+                                            var azimuthInfluenceNumber = Number(resultPredict[7]) * 100;
+                                            var azimuthInfluenceString = azimuthInfluenceNumber + ' ';
+                                            var azimuthInfluence = azimuthInfluenceString.slice(0, 6);
 
                                             res.render('compare.ejs', { connected: true, currentInstallation: currentInstallation, theoricalProduction: theoricalProduction, averages: averages, local_averages: local_averages, locationId: req.body.locationId, locationInfluence: locationInfluence, inverterInfluence: inverterInfluence, technologyInfluence: technologyInfluence, technologyInfluence: technologyInfluence, npInfluence: npInfluence, slopeInfluence : slopeInfluence, azimuthInfluence: azimuthInfluence});
                                         }).catch(function (error) {
