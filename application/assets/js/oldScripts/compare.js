@@ -32,6 +32,7 @@ $(document).ready(function () {
                 }
                 else {
                     $('#errorLoadGM').hide();
+                    updateInfluences();
                     updateLocation(currentInstallation.location);
                     break;
                 }
@@ -39,6 +40,37 @@ $(document).ready(function () {
         }
     }
 });
+
+function updateInfluences() {
+    var tab = [];
+    tab.push({ 'pourcentage': locationInfluence, 'target': 'location' });
+    tab.push({ 'pourcentage': inverterInfluence, 'target': 'inverter' });
+    tab.push({ 'pourcentage': technologyInfluence, 'target': 'technology' });
+    tab.push({ 'pourcentage': npInfluence, 'target': 'np' });
+    tab.push({ 'pourcentage': slopeInfluence, 'target': 'slope' });
+    tab.push({ 'pourcentage': azimuthInfluence, 'target': 'azimuth' });
+
+    tab.sort(function (a, b) {
+        return b.pourcentage - a.pourcentage;
+    });
+
+    tab.forEach(function (item) {
+        switch (item.target) {
+            case 'location': $('#divInfluences').append('<b>Location</b> = ' + locationInfluence + ' %</br>');
+                break;
+            case 'inverter': $('#divInfluences').append('<b>Inverter efficiency</b> = ' + inverterInfluence + ' %</br>');
+                break;
+            case 'technology': $('#divInfluences').append('<b>Technology</b> = ' + technologyInfluence + ' %</br>');
+                break;
+            case 'np': $('#divInfluences').append('<b>Nominal power</b> = ' + npInfluence + ' %</br>');
+                break;
+            case 'slope': $('#divInfluences').append('<b>Slope</b> = ' + slopeInfluence + ' %</br>');
+                break;
+            case 'azimuth': $('#divInfluences').append('<b>Azimuth</b> = ' + azimuthInfluence + ' %</br>');
+                break;
+        }
+    });
+}
 
 function updateLocation(currentLocation) {
     var infowindow = new google.maps.InfoWindow();

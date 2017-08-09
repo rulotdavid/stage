@@ -81,37 +81,21 @@
                             <div class="col-md-6">
                                 <h3>Influence</h3>
                                 <h3>Here is a list of features and their influence on your installation.</h3>
-                                <b>Location</b> =
-                                <%= locationInfluence %> %
+                                <div id="divInfluences"> </div>
+                                </br>
+                                </br>
+                                <h3>Here is a list of the characteristics that can influence your production.
                                     </br>
-                                    <b>Inverter efficiency</b> =
-                                    <%= inverterInfluence %> %
-                                        </br>
-                                        <b>Technology</b> =
-                                        <%= technologyInfluence %> %
-                                            </br>
-                                            <b>Nominal power</b> =
-                                            <%= npInfluence %> %
-                                                </br>
-                                                <b>Slope</b> =
-                                                <%= slopeInfluence %> %
-                                                    </br>
-                                                    <b>Azimuth</b> =
-                                                    <%= azimuthInfluence %> %
-                                                        </br>
-                                                        </br>
-                                                        <h3>Here is a list of the characteristics that can influence your production.
-                                                            </br>
-                                                            You can improve them to upgrade your production:</h3>
-                                                        <ul>
-                                                            <li>Quality of each photovoltaic panel, its wear and age</li>
-                                                            <li>Quality of the operation of the inverter, as well as its age</li>
-                                                            <li>Quality of wiring and its wear</li>
-                                                            <li>Quality of the connections between the panels, the invereter, the wiring of the house</li>
-                                                            <li>Percentage of dirt (dust, leaf, ...)</li>
-                                                            <li>Percentage of shading</li>
-                                                            <li>Light-induced degradation</li>
-                                                        </ul>
+                                    You can improve them to upgrade your production:</h3>
+                                <ul>
+                                    <li>Quality of each photovoltaic panel, its wear and age</li>
+                                    <li>Quality of the operation of the inverter, as well as its age</li>
+                                    <li>Quality of wiring and its wear</li>
+                                    <li>Quality of the connections between the panels, the invereter, the wiring of the house</li>
+                                    <li>Percentage of dirt (dust, leaf, ...)</li>
+                                    <li>Percentage of shading</li>
+                                    <li>Light-induced degradation</li>
+                                </ul>
                             </div>
                         </div>
                         </br>
@@ -188,6 +172,12 @@
                     var currentInstallation = <%- JSON.stringify(currentInstallation) %>;
                     var averages = <%- JSON.stringify(averages) %>;
                     var local_averages = <%- JSON.stringify(local_averages) %>;
+                    var locationInfluence = <%- JSON.stringify(locationInfluence) %>;
+                    var inverterInfluence = <%- JSON.stringify(inverterInfluence) %>;
+                    var technologyInfluence = <%- JSON.stringify(technologyInfluence) %>;
+                    var npInfluence = <%- JSON.stringify(npInfluence) %>;
+                    var slopeInfluence = <%- JSON.stringify(slopeInfluence) %>;
+                    var azimuthInfluence = <%- JSON.stringify(azimuthInfluence) %>;
                 </script>
 
                 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdv3Y8l7bUtzaqTkzawCBroYZqOIaWeaI&language=en&libraries=places"
